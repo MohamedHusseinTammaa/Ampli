@@ -186,4 +186,16 @@ export const signupSchema = {
             }
         }
     }
-}
+};
+export const loginSchema = {
+    email: {
+        isEmail: { errorMessage: "you need to enter Email format !" },
+        notEmpty: { errorMessage: "you need to enter an Email !" },
+        isLength: { options: { min: 5, max: 32 }, errorMessage: "email must be from 5 to 32 chars" }
+    },
+    password: {
+        isString: { errorMessage: "password must be string!" },
+        notEmpty: { errorMessage: "you need to enter a password !" },
+        isLength: { options: { min: 5, max: 32 }, errorMessage: "password must be from 5 to 32 chars" }
+    }
+};
