@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import validator from "validator";
-import { Roles } from "../../Utils/usersRoles.ts";
 const userSchema = new mongoose.Schema({
     name: {
         first: String,

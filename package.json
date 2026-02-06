@@ -4,10 +4,11 @@
   "description": "CV AI Analyzer frontend with Express backend proxy to Groq API",
   "main": "server.js",
   "type": "module",
-  "scripts": {
-    "start": "node Server/index.js",
-    "dev": "nodemon Server/index.js"
-  },
+ "scripts": {
+  "start": "cd Server && node index.js",
+  "dev": "cd Server && nodemon index.js"
+},
+
   "keywords": [
     "cv",
     "resume",
