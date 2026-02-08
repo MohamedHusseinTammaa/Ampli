@@ -60,7 +60,22 @@ const login = ErrorAsyncWrapper(async (req, res,next) => {
         token
     });
 });
+const getAllUsers = ErrorAsyncWrapper(async (req, res,next) => {
+    const limit = req.query.limit ||10;
+    const page = req.query.page ||1;
+    const skip = (page-1)*limit;
+    const users = await Services.getAllUsers(limit,skip);
+    res.status(200).json({
+        success:true,
+        data: users,
+        pagination :{
+            limit :limit,
+            page : page
+        }
+    })
+});
 export{
     signup,
-    login
+    login,
+    getAllUsers
 }

@@ -5,4 +5,5 @@ import { signupSchema, loginSchema } from '../Middlewares/User.middlewares.js';
 export const router = Router();
 router.post('/signup',checkSchema(signupSchema),Controllers.signup);
 router.post('/login',checkSchema(loginSchema),Controllers.login);
+router.get('/',Controllers.getAllUsers)
 export default router;
