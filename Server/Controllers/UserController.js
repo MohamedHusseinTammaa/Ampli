@@ -4,8 +4,11 @@ import ErrorHandler from '../Utils/Errors/Error.js';
 import User from '../Models/User.js';
 import * as Services from '../Services/User.Services.js'
 import bcrypt from 'bcrypt';
+import blackListedTokenModel from '../Models/BlockedList.js';
 import "dotenv/config"
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
+import { httpStatus } from '../Utils/HTTP/http.state.js';
 const signup = ErrorAsyncWrapper(async (req, res,next) => {
    const errors = validationResult(req);
    if(!errors.isEmpty()){
@@ -53,7 +56,7 @@ const login = ErrorAsyncWrapper(async (req, res,next) => {
     if(!isPasswordCorrect){
         return next(new ErrorHandler("Invalid email or password",400,"Invalid email or password"));
     }
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET,{ expiresIn: "12m" });
+    const token = jwt.sign({ email: user.email, _id: user._id, jti: uuidv4() }, process.env.JWT_SECRET,{ expiresIn: "12m" });
     res.status(200).json({
         success: true,
         message: "logged in successfully",
@@ -74,8 +77,29 @@ const getAllUsers = ErrorAsyncWrapper(async (req, res,next) => {
         }
     })
 });
+const logout = ErrorAsyncWrapper(async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(
+            new AppError(httpMessage.BAD_REQUEST, 400, httpStatus.FAIL, errors.array())
+        );
+    }
+    const token = req.currentUser
+    console.log({ tokenJTI: token.jti });
+
+    const data = await blackListedTokenModel.create({
+        tokenId: req.currentUser.jti,
+        expiresAt: new Date(Date.now())
+    });
+
+    res.status(200).json({
+        status: httpStatus.OK,
+        message: "logged out successfully"
+    });
+});
 export{
     signup,
     login,
-    getAllUsers
+    getAllUsers,
+    logout
 }
