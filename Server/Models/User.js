@@ -47,8 +47,19 @@ const userSchema = new mongoose.Schema({
     deleted:{
         type :Boolean,
         default:false
+    },
+    emailVerified: {
+        type: Boolean,
+        default: false
+    },
+    emailVerificationTokenHash: {
+        type: String,
+        select: false
+    },
+    emailVerificationTokenExpires: {
+        type: Date,
+        select: false
     }
-
 });
 
 const User= mongoose.model('users',userSchema);

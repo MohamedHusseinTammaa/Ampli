@@ -28,12 +28,13 @@ const signup = ErrorAsyncWrapper(async (req, res,next) => {
     email,
     password: hashedPassword,
     });
-    try{
-    const user = await Services.signup(newUser);
+    try {
+    const { user, verificationToken } = await Services.signup(newUser);
+    await Services.sendVerificationEmail(user.email, verificationToken);
     res.status(201).json({
-        success: true,
-        message: "User created successfully",
-        user
+      success: true,
+      message: "User created. Please verify your email.",
+      user,
     });
     } catch (error) {
         if(error.code === 11000){
@@ -53,8 +54,11 @@ const login = ErrorAsyncWrapper(async (req, res,next) => {
         return next(new ErrorHandler("Invalid email or password",400,"Invalid email or password"));
     }
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if(!isPasswordCorrect){
-        return next(new ErrorHandler("Invalid email or password",400,"Invalid email or password"));
+    if (!isPasswordCorrect) {
+      return next(new ErrorHandler("Invalid email or password", 400, "Invalid email or password"));
+    }
+    if (!user.emailVerified) {
+      return next(new ErrorHandler("Please verify your email before signing in", 403, "Email not verified"));
     }
     const token = jwt.sign({ email: user.email, _id: user._id, jti: uuidv4() }, process.env.JWT_SECRET,{ expiresIn: "12m" });
     res.status(200).json({
@@ -77,6 +81,46 @@ const getAllUsers = ErrorAsyncWrapper(async (req, res,next) => {
         }
     })
 });
+const confirmEmail = ErrorAsyncWrapper(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new ErrorHandler("Validation errors", 400, errors.array()));
+  }
+  const { email, token } = req.query;
+  const result = await Services.confirmEmail(email, token);
+  if (result.alreadyVerified) {
+    return res.status(200).json({ success: true, message: "Email is already verified." });
+  }
+  if (!result.success) {
+    const message = result.reason === "expired" ? "Verification link has expired." : "Invalid or expired verification link.";
+    return next(new ErrorHandler(message, 400, result.reason));
+  }
+  res.status(200).json({ success: true, message: "Email verified successfully." });
+});
+
+const resendVerificationEmail = ErrorAsyncWrapper(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new ErrorHandler("Validation errors", 400, errors.array()));
+  }
+  const { email } = req.query;
+  const result = await Services.resendVerificationEmail(email);
+  if (result.notFound) {
+    return res.status(200).json({ success: true, message: "If an account exists, a new verification email was sent." });
+  }
+  if (result.alreadyVerified) {
+    return next(new ErrorHandler("Email is already verified.", 400, "already_verified"));
+  }
+  if (!result.sent) {
+    return res.status(429).json({
+      success: false,
+      message: `Too many requests. Try again in ${result.retryAfterSeconds} seconds.`,
+      retryAfterSeconds: result.retryAfterSeconds,
+    });
+  }
+  res.status(200).json({ success: true, message: "Verification email sent." });
+});
+
 const logout = ErrorAsyncWrapper(async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -97,9 +141,11 @@ const logout = ErrorAsyncWrapper(async (req, res, next) => {
         message: "logged out successfully"
     });
 });
-export{
-    signup,
-    login,
-    getAllUsers,
-    logout
+export {
+  signup,
+  login,
+  getAllUsers,
+  logout,
+  confirmEmail,
+  resendVerificationEmail,
 }

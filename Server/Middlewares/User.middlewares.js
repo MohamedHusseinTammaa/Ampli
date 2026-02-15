@@ -199,3 +199,22 @@ export const loginSchema = {
         isLength: { options: { min: 5, max: 32 }, errorMessage: "password must be from 5 to 32 chars" }
     }
 };
+
+export const confirmEmailSchema = {
+    email: {
+        isEmail: { errorMessage: "Valid email is required" },
+        notEmpty: { errorMessage: "Email is required" },
+    },
+    token: {
+        isString: { errorMessage: "Token must be a string" },
+        notEmpty: { errorMessage: "Verification token is required" },
+        isLength: { options: { min: 32, max: 128 }, errorMessage: "Invalid token format" }
+    }
+};
+
+export const verifyEmailResendSchema = {
+    email: {
+        isEmail: { errorMessage: "Valid email is required" },
+        notEmpty: { errorMessage: "Email is required" },
+    }
+};
