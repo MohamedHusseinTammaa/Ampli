@@ -218,3 +218,32 @@ export const verifyEmailResendSchema = {
         notEmpty: { errorMessage: "Email is required" },
     }
 };
+
+export const forgotPasswordSchema = {
+    email: {
+        isEmail: { errorMessage: "Valid email is required" },
+        notEmpty: { errorMessage: "Email is required" },
+
+    }
+};
+
+export const resetPasswordSchema = {
+    email: {
+        isEmail: { errorMessage: "Valid email is required" },
+        notEmpty: { errorMessage: "Email is required" },
+    },
+    token: {
+        isString: { errorMessage: "Token must be a string" },
+        notEmpty: { errorMessage: "Reset token is required" },
+        isLength: { options: { min: 32, max: 128 }, errorMessage: "Invalid token format" }
+    },
+    newPassword: {
+        isString: { errorMessage: "Password must be a string" },
+        notEmpty: { errorMessage: "New password is required" },
+        isLength: { options: { min: 8, max: 128 }, errorMessage: "Password must be between 8 and 128 characters" },
+        matches: {
+            options: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+            errorMessage: "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+        }
+    }
+};

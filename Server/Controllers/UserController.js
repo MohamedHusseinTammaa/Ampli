@@ -121,6 +121,41 @@ const resendVerificationEmail = ErrorAsyncWrapper(async (req, res, next) => {
   res.status(200).json({ success: true, message: "Verification email sent." });
 });
 
+const forgotPassword = ErrorAsyncWrapper(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new ErrorHandler("Validation errors", 400, errors.array()));
+  }
+  const { email } = req.body;
+  const result = await Services.forgotPassword(email);
+  if (result.notFound) {
+    return res.status(200).json({ success: true, message: "If an account exists, a password reset email was sent." });
+  }
+  if (!result.sent) {
+    return res.status(429).json({
+      success: false,
+      message: `Too many requests. Try again in ${result.retryAfterSeconds} seconds.`,
+      retryAfterSeconds: result.retryAfterSeconds,
+    });
+  }
+  res.status(200).json({ success: true, message: "Password reset email sent." });
+});
+
+const resetPassword = ErrorAsyncWrapper(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new ErrorHandler("Validation errors", 400, errors.array()));
+  }
+  const { email, token} = req.query;
+  const {newPassword} = req.body
+  const result = await Services.resetPassword(email, token, newPassword);
+  if (!result.success) {
+    const message = result.reason === "expired" ? "Reset link has expired. Request a new one." : "Invalid or expired reset link.";
+    return next(new ErrorHandler(message, 400, result.reason));
+  }
+  res.status(200).json({ success: true, message: "Password reset successfully." });
+});
+
 const logout = ErrorAsyncWrapper(async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -148,4 +183,6 @@ export {
   logout,
   confirmEmail,
   resendVerificationEmail,
+  forgotPassword,
+  resetPassword,
 }
