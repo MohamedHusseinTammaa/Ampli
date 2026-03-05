@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import validator from "validator";
-import { Roles } from "../../Utils/usersRoles.ts";
 const userSchema = new mongoose.Schema({
     name: {
         first: String,
@@ -48,8 +47,27 @@ const userSchema = new mongoose.Schema({
     deleted:{
         type :Boolean,
         default:false
+    },
+    emailVerified: {
+        type: Boolean,
+        default: false
+    },
+    emailVerificationTokenHash: {
+        type: String,
+        select: false
+    },
+    emailVerificationTokenExpires: {
+        type: Date,
+        select: false
+    },
+    passwordResetTokenHash: {
+        type: String,
+        select: false
+    },
+    passwordResetTokenExpires: {
+        type: Date,
+        select: false
     }
-
 });
 
 const User= mongoose.model('users',userSchema);
