@@ -5,6 +5,7 @@ import Express from 'express';
 import cors from "cors";
 import connectDB from './Database/DbConnection.js';
 import {router as UsersRouter} from './Routers/User.router.js';
+import {router as CvRouter} from './Routers/Cv.router.js';
 console.log("DB_URL:", process.env.DB_URL);
 
 const app = Express();
@@ -26,6 +27,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/User',UsersRouter);
 app.use('/api/ai',AiRouter);
+app.use('/api/cv',CvRouter);
 app.use((req,res)=>{
   res.status(404).json({
     message: 'Route not found',

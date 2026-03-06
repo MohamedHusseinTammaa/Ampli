@@ -97,7 +97,6 @@ const confirmEmail = ErrorAsyncWrapper(async (req, res, next) => {
   }
   res.status(200).json({ success: true, message: "Email verified successfully." });
 });
-
 const resendVerificationEmail = ErrorAsyncWrapper(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -120,7 +119,6 @@ const resendVerificationEmail = ErrorAsyncWrapper(async (req, res, next) => {
   }
   res.status(200).json({ success: true, message: "Verification email sent." });
 });
-
 const forgotPassword = ErrorAsyncWrapper(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
