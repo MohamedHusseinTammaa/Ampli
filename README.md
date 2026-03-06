@@ -1,81 +1,57 @@
-# 📄 AI-Powered ATS CV Analyzer
+# 📄 AI-Powered LaTeX CV Builder
 
-An AI-powered web application that analyzes resumes (CVs) for **ATS (Applicant Tracking System) compatibility**.  
-Users can upload their CV and receive an **ATS score**, **strengths**, **weaknesses**, and **actionable improvement suggestions**.
+An AI-powered web application that helps users **create professional resumes using LaTeX templates**.  
+Users can easily build their CV by entering personal information, experience, education, and skills, then generate **clean, professional, and ATS-friendly PDF resumes**.
+
+The platform simplifies LaTeX-based resume creation while maintaining **high-quality formatting and structure**.
 
 ---
 
 ## 🚀 Features
 
-- Upload CV files (**PDF, DOC, DOCX, TXT**)
-- ATS compatibility scoring (0–100)
-- Strengths & weaknesses analysis
-- Actionable resume improvement suggestions
-- Keyword recommendations for ATS optimization
-- Stateless analysis (fresh evaluation on every upload)
-- Simple drag-and-drop UI
+- Create and manage CVs (CRUD operations)
+- Structured CV sections:
+  - Personal Info
+  - Summary
+  - Experience
+  - Education
+  - Skills
+- Multiple **LaTeX CV templates**
+- Generate professional **PDF resumes**
+- AI assistant to improve CV content
+- Real-time CV editing
+- Clean and professional formatting
+- ATS-friendly resume structure
 
 ---
 
 ## 🧠 How It Works
 
-1. User uploads a CV file from the frontend.
-2. The file is sent to Flowise using **Full File Upload**.
-3. The entire CV content is injected into the LLM prompt.
-4. The AI analyzes the CV strictly based on the uploaded document.
-5. Results are returned in a structured ATS-focused format.
+1. User creates an account and logs in.
+2. User creates a new CV.
+3. User fills in CV sections (personal info, experience, education, skills, etc.).
+4. Backend generates a **LaTeX document** using the selected template.
+5. The LaTeX file is compiled into a **PDF resume**.
+6. User can download or update their CV anytime.
 
-This approach avoids conversational confusion and ensures consistent, deterministic analysis.
-
-## use
-First, you upload the image
-![Alt text](images/upload.png)
-
-Then the AI replies with the answer
-![Alt text](images/results.png)
-
-
+This approach allows users to create **high-quality resumes without writing LaTeX manually**.
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- HTML
-- CSS
-- Vanilla JavaScript
-- Drag & Drop File Upload
+### Backend
+- **Node.js**
+- Express.js
+- REST API
 
-### Backend / AI
-- **Flowise** (LLM orchestration)
-- Full File Uploads (non-RAG)
-- OpenAI-compatible / OSS LLM
-- Stateless architecture (no memory)
+### Database
+- SQL / NoSQL (depending on your setup)
 
----
+### Templates
+- **LaTeX**
 
-## 📂 Supported File Types
-
-- `.pdf`
-- `.txt`
-
-**Max file size:** 10 MB
+### AI
+- OpenAI API (for resume suggestions and improvements)
 
 ---
-
-## 📑 Output Format
-
-```text
-ATS Score: XX / 100
-
-Strengths:
-- ...
-
-Weaknesses:
-- ...
-
-Improvements:
-- ...
-
-(Optional) Keyword Suggestions:
-- ...
