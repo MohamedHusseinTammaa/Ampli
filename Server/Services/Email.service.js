@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 const VERIFY_EMAIL_BASE_URL = process.env.VERIFY_EMAIL_BASE_URL || process.env.FRONTEND_URL || "http://localhost:3000";
-const VERIFY_EMAIL_PATH = process.env.VERIFY_EMAIL_PATH || "/api/user/verify-email";
+const VERIFY_EMAIL_PATH = process.env.VERIFY_EMAIL_PATH || "/api/user/confirm";
 const RESET_PASSWORD_PATH = process.env.RESET_PASSWORD_PATH || "/api/user/reset-password";
 
 /**
