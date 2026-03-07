@@ -231,15 +231,18 @@ export const forgotPasswordSchema = {
 
 export const resetPasswordSchema = {
     email: {
+        in: ['query'],
         isEmail: { errorMessage: "Valid email is required" },
         notEmpty: { errorMessage: "Email is required" },
     },
     token: {
+        in: ['query'],
         isString: { errorMessage: "Token must be a string" },
         notEmpty: { errorMessage: "Reset token is required" },
         isLength: { options: { min: 32, max: 128 }, errorMessage: "Invalid token format" }
     },
     newPassword: {
+        in: ['body'],
         isString: { errorMessage: "Password must be a string" },
         notEmpty: { errorMessage: "New password is required" },
         isLength: { options: { min: 8, max: 128 }, errorMessage: "Password must be between 8 and 128 characters" },
@@ -249,3 +252,4 @@ export const resetPasswordSchema = {
         }
     }
 };
+ 
