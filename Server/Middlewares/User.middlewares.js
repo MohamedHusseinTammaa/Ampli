@@ -202,10 +202,12 @@ export const loginSchema = {
 
 export const confirmEmailSchema = {
     email: {
+        in: ['query'],
         isEmail: { errorMessage: "Valid email is required" },
         notEmpty: { errorMessage: "Email is required" },
     },
     token: {
+        in: ['query'],
         isString: { errorMessage: "Token must be a string" },
         notEmpty: { errorMessage: "Verification token is required" },
         isLength: { options: { min: 32, max: 128 }, errorMessage: "Invalid token format" }
